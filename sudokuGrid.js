@@ -165,7 +165,7 @@ console.log(isApplicableValue("G8",6));
 console.log(isApplicableValue("H3",1));     */
 
 //console.log(sudokuGrid);
-
+                        /*
 setValue("A2",2);
 setValue("A6",9);
 setValue("A7",1);
@@ -201,10 +201,31 @@ setValue("H9",6);
 
 setValue("I3",7);
 setValue("I4",9);
-setValue("I8",1);
+setValue("I8",1);      */
+
+setValue("C3",1);
+setValue("E3",2);
+setValue("F2",3);
+setValue("H2",8);
+setValue("I2",5);
+
+setValue("B6",9);
+setValue("C5",4);
+setValue("D4",5);
+setValue("F4",7);
+setValue("G5",1);
+
+setValue("A7",5);
+setValue("C8",2);
+setValue("E8",1);
+setValue("E9",4);
+setValue("H7",7);
+setValue("I7",3);
+setValue("I9",9);
 
 printGrid();
-fillApplicableSpaces();          /*
+fillApplicableSpaces();
+ /*
 console.log(sudokuGrid["F1"]);
 console.log(sudokuGrid["F8"]);
 console.log(sudokuGrid["F9"]); */
@@ -290,7 +311,7 @@ function fillApplicableSpaces() {
             setValue(applicableCellG,k); changed = true; console.log("Setting " + applicableCellG + " as " + k);
          }
       }
-                
+
       for (let y = 1; y <= 9; y++) {
          for (let x = 1; x <= 9; x++) {
             let tmpo = 0;
@@ -317,7 +338,8 @@ function fillApplicableSpaces() {
 }
 
 function printGrid() {
-   console.log("       SUDOKU GRID");
+   console.log("       SUDOKU GRID\n");
+   console.log("| A B C | D E F | G H I |");
    console.log("+-------+-------+-------+");
    let tmp = "| ";
    for (let i = 1; i <= 3; i++) {
