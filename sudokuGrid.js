@@ -71,7 +71,7 @@ function getSubGrid(gridId) {
 
    let tmpCol = 0;
    if (gridId === 2 || gridId === 5 || gridId === 8) tmpCol = 1;
-   if (gridId === 3 || gridId === 6 || gridId === 9) tmpCol = 1;
+   if (gridId === 3 || gridId === 6 || gridId === 9) tmpCol = 2;
 
    let tmpRow = 0;
    if (gridId >= 4 && gridId <= 6) tmpRow = 1;
@@ -132,9 +132,15 @@ setValue("E9",8);
 setValue("H9",7);
 setValue("I9",9);
 console.log(sudokuGrid);
+console.log(getSubGrid(9));
+console.log(isApplicableValue("G8",6));
+console.log(isApplicableValue("H3",1));
 printGrid();
 
 function setValue(cellId,value) {
+   if (sudokuGrid[cellId].assigned === true) throw new Error('Value already assigned on cell ' + cellId + '!');
+   if (sudokuGrid[cellId][indicator + value] === false) throw new Error('Value cannot be added on cell ' + cellId + '!');
+
    sudokuGrid[cellId].value = value;
    sudokuGrid[cellId].assigned = true;
    //wipeCell(cellId,value);
@@ -158,18 +164,28 @@ function notifyCells(cellCol, cellRow, value) {
       sudokuGrid[col(i) + cellRow][indicator + value] = false;
       sudokuGrid[col(cellCol) + i][indicator + value] = false;
    }
-   
-   let tmpSubgrid = 0;
-   for (let i = 1; i <= 9; i++) {
-      tmpSubgrid++;
-      if (getSubGrid(tmpSubgrid).includes(tmpId)) break;
-   }
 
-   //console.log(tmpSubgrid);
-   let tmp2 = getSubGrid(tmpSubgrid);
-   for (let i = 0; i < 9; i++) {
-      sudokuGrid[tmp2[i]][indicator + value] = false;
+   for (let i = 1; i <= 9; i++) {
+         //console.log("sas");
+      if (getSubGrid(i).includes(tmpId)) {
+         let tmp2 = getSubGrid(i);
+         console.log(tmp2);
+         for (let j = 0; j < 9; j++) {
+         //console.log("saws");
+            sudokuGrid[tmp2[j]][indicator + value] = false;
+         }
+         //console.log("sus");
+         break;
+      }
    }
+}
+
+function isApplicableValue(cellId,checkValue) {
+   let tmp1 = sudokuGrid[cellId];
+   
+   if (tmp1.assigned) return false;
+   
+   return tmp1[indicator + checkValue];
 }
 
 function printGrid() {
