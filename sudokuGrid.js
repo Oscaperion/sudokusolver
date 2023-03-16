@@ -136,10 +136,14 @@ console.log(getSubGrid(9));
 console.log(isApplicableValue("G8",6));
 console.log(isApplicableValue("H3",1));
 printGrid();
+checkApplicableSpaces();
+printGrid();
+checkApplicableSpaces();
+printGrid();
 
 function setValue(cellId,value) {
    if (sudokuGrid[cellId].assigned === true) throw new Error('Value already assigned on cell ' + cellId + '!');
-   if (sudokuGrid[cellId][indicator + value] === false) throw new Error('Value cannot be added on cell ' + cellId + '!');
+   if (sudokuGrid[cellId][indicator + value] === false) throw new Error('Value cannot be added on cell ' + cellId + '! It has already value ' + sudokuGrid[cellId].value);
 
    sudokuGrid[cellId].value = value;
    sudokuGrid[cellId].assigned = true;
@@ -169,7 +173,7 @@ function notifyCells(cellCol, cellRow, value) {
          //console.log("sas");
       if (getSubGrid(i).includes(tmpId)) {
          let tmp2 = getSubGrid(i);
-         console.log(tmp2);
+         //console.log(tmp2);
          for (let j = 0; j < 9; j++) {
          //console.log("saws");
             sudokuGrid[tmp2[j]][indicator + value] = false;
@@ -186,6 +190,35 @@ function isApplicableValue(cellId,checkValue) {
    if (tmp1.assigned) return false;
    
    return tmp1[indicator + checkValue];
+}
+
+function checkApplicableSpaces() {
+   for (let i = 1; i <= 9; i++) {
+      let tmpRow = getRow(i);
+      let tmpCol = getCol(i);
+      let tmpSGrid = getSubGrid(i);
+
+      // j = row, col, grid; k = value
+      for (let k = 1; k <= 9; k++) {
+
+         let applicableCellsRow = 0;
+         let applicableCellR = "";
+         let applicableCellsCol = 0;
+         let applicableCellC = "";
+         let applicableCellsSGrid = 0;
+         let applicableCellG = "";
+
+         for (let j = 0; j < 9; j++) {
+            if (isApplicableValue(tmpRow[j], k)) { applicableCellsRow++; applicableCellR = tmpRow[j]; }
+            if (isApplicableValue(tmpCol[j], k)) { applicableCellsCol++; applicableCellC = tmpCol[j]; }
+            if (isApplicableValue(tmpSGrid[j], k)) { applicableCellsSGrid++; applicableCellG = tmpSGrid[j]; }
+         }
+
+         if (applicableCellsRow === 1) setValue(applicableCellR,k);
+         if (applicableCellsCol === 1 && applicableCellC !== applicableCellR) setValue(applicableCellC,k);
+         if (applicableCellsSGrid === 1 && applicableCellG !== applicableCellR && applicableCellG !== applicableCellC) setValue(applicableCellG,k);
+      }
+   }
 }
 
 function printGrid() {
