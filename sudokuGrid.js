@@ -91,7 +91,7 @@ console.log(sudokuGrid.E4);
 console.log(getRow(4)[4]);
 console.log(getCol(5)[3]);
 console.log(getSubGrid(5));  */
-
+                    /*
 printGrid();
 setValue("A1",5);
 setValue("B1",3);
@@ -134,11 +134,49 @@ setValue("I9",9);
 console.log(sudokuGrid);
 console.log(getSubGrid(9));
 console.log(isApplicableValue("G8",6));
-console.log(isApplicableValue("H3",1));
+console.log(isApplicableValue("H3",1));     */
+
+//console.log(sudokuGrid);
+
+setValue("A2",2);
+setValue("A6",9);
+setValue("A7",1);
+
+setValue("B1",9);
+setValue("B8",8);
+
+setValue("C1",1);
+setValue("C2",3);
+setValue("C4",2);
+setValue("C7",5);
+
+setValue("D3",4);
+setValue("D4",8);
+setValue("D6",1);
+setValue("D7",2);
+
+setValue("E1",7);
+setValue("E9",1);
+
+setValue("F3",2);
+setValue("F4",6);
+setValue("F6",4);
+setValue("F7",7);
+
+setValue("G3",9);
+setValue("G6",6);
+setValue("G8",5);
+setValue("G9",7);
+
+setValue("H2",5);
+setValue("H9",6);
+
+setValue("I3",7);
+setValue("I4",9);
+setValue("I8",1);
+
 printGrid();
-checkApplicableSpaces();
-printGrid();
-checkApplicableSpaces();
+fillApplicableSpaces();
 printGrid();
 
 function setValue(cellId,value) {
@@ -192,7 +230,10 @@ function isApplicableValue(cellId,checkValue) {
    return tmp1[indicator + checkValue];
 }
 
-function checkApplicableSpaces() {
+function fillApplicableSpaces() {
+  let changed = true;
+  while (changed) {
+   changed = false;
    for (let i = 1; i <= 9; i++) {
       let tmpRow = getRow(i);
       let tmpCol = getCol(i);
@@ -214,11 +255,12 @@ function checkApplicableSpaces() {
             if (isApplicableValue(tmpSGrid[j], k)) { applicableCellsSGrid++; applicableCellG = tmpSGrid[j]; }
          }
 
-         if (applicableCellsRow === 1) setValue(applicableCellR,k);
-         if (applicableCellsCol === 1 && applicableCellC !== applicableCellR) setValue(applicableCellC,k);
-         if (applicableCellsSGrid === 1 && applicableCellG !== applicableCellR && applicableCellG !== applicableCellC) setValue(applicableCellG,k);
+         if (applicableCellsRow === 1) { setValue(applicableCellR,k); changed = true; }
+         if (applicableCellsCol === 1 && applicableCellC !== applicableCellR) { setValue(applicableCellC,k); changed = true; }
+         if (applicableCellsSGrid === 1 && applicableCellG !== applicableCellR && applicableCellG !== applicableCellC) { setValue(applicableCellG,k); changed = true; }
       }
    }
+  }
 }
 
 function printGrid() {
