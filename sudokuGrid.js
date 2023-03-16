@@ -6,6 +6,7 @@ const http = require('http');
 
 var sudokuGrid = {};
 
+const indicator = "canBe";
 const startLetterPos = 'A'.charCodeAt();
 function col(colNumber) { return String.fromCharCode(startLetterPos - 1 + colNumber); }
 
@@ -20,15 +21,18 @@ function col(colNumber) { return String.fromCharCode(startLetterPos - 1 + colNum
          
          // Each cell will have information what the assigned number is (value) and - if still not assigned - what other numbers it could still be
          sudokuGrid[tmp2]["id"] = tmp2;
+         sudokuGrid[tmp2]["col"] = i;
+         sudokuGrid[tmp2]["row"] = j;
          sudokuGrid[tmp2]["value"] = 0;
          sudokuGrid[tmp2]["assigned"] = false;
          
          for (let k = 1; k <= 9; k++) {
-            sudokuGrid[tmp2]["canBe" + k] = true;
+            sudokuGrid[tmp2][indicator + k] = true;
          }
       }
    }
-   sudokuGrid["E4"].value = 5;
+   //sudokuGrid["E4"].value = 5;
+
 }
 
 function getRow(rowNumber) {
@@ -37,7 +41,7 @@ function getRow(rowNumber) {
    let returnArray = [];
 
    for (let i = 1; i <= 9; i++) {
-      returnArray.push(sudokuGrid[col(i) + rowNumber]);
+      returnArray.push(col(i) + rowNumber);
    }
    
    return returnArray;
@@ -51,7 +55,7 @@ function getCol(colNumber) {
    let colTmp = col(colNumber);
    
    for (let i = 1; i <= 9; i++) {
-      returnArray.push(sudokuGrid[colTmp + i]);
+      returnArray.push(colTmp + i);
    }
    
    return returnArray;
@@ -75,15 +79,130 @@ function getSubGrid(gridId) {
 
    for (let i = 1; i <= 3; i++) {
       for (let j = 1; j <= 3; j++) {
-         returnArray.push(sudokuGrid[col(i + (tmpCol * 3)) + (j + (tmpRow * 3))]);
+         returnArray.push(col(i + (tmpCol * 3)) + (j + (tmpRow * 3)));
       }
    }
 
    return returnArray;
 }
-
+                               /*
 console.log(sudokuGrid);
 console.log(sudokuGrid.E4);
 console.log(getRow(4)[4]);
 console.log(getCol(5)[3]);
-console.log(getSubGrid(10));
+console.log(getSubGrid(5));  */
+
+printGrid();
+setValue("A1",5);
+setValue("B1",3);
+setValue("E1",7);
+
+setValue("A2",6);
+setValue("D2",1);
+setValue("E2",9);
+setValue("F2",5);
+
+setValue("B3",9);
+setValue("C3",8);
+setValue("H3",6);
+
+setValue("A4",8);
+setValue("E4",6);
+setValue("I4",3);
+
+setValue("A5",4);
+setValue("D5",8);
+setValue("F5",3);
+setValue("I5",1);
+
+setValue("A6",7);
+setValue("E6",2);
+setValue("I6",6);
+
+setValue("B7",6);
+setValue("G7",2);
+setValue("H7",8);
+
+setValue("D8",4);
+setValue("E8",1);
+setValue("F8",9);
+setValue("I8",5);
+
+setValue("E9",8);
+setValue("H9",7);
+setValue("I9",9);
+console.log(sudokuGrid);
+printGrid();
+
+function setValue(cellId,value) {
+   sudokuGrid[cellId].value = value;
+   sudokuGrid[cellId].assigned = true;
+   //wipeCell(cellId,value);
+   notifyCells(sudokuGrid[cellId].col, sudokuGrid[cellId].row, value);
+}
+
+function wipeCell(cellId,value) {
+   sudokuGrid[cellId].assigned = true;
+   for (let i = 1; i <= 9; i++) {
+      if (value !== i) sudokuGrid[cellId][indicator + i] = false;
+   }
+}
+
+function notifyCells(cellCol, cellRow, value) {
+   let tmpId = col(cellCol) + cellRow;
+
+   let tmpCol = getCol(cellCol);
+   let tmpRow = getRow(cellRow);
+
+   for (let i = 1; i <= 9; i++) {
+      sudokuGrid[col(i) + cellRow][indicator + value] = false;
+      sudokuGrid[col(cellCol) + i][indicator + value] = false;
+   }
+   
+   let tmpSubgrid = 0;
+   for (let i = 1; i <= 9; i++) {
+      tmpSubgrid++;
+      if (getSubGrid(tmpSubgrid).includes(tmpId)) break;
+   }
+
+   //console.log(tmpSubgrid);
+   let tmp2 = getSubGrid(tmpSubgrid);
+   for (let i = 0; i < 9; i++) {
+      sudokuGrid[tmp2[i]][indicator + value] = false;
+   }
+}
+
+function printGrid() {
+   console.log("       SUDOKU GRID");
+   console.log("+-------+-------+-------+");
+   let tmp = "| ";
+   for (let i = 1; i <= 3; i++) {
+      for (let j = 1; j <= 9; j++) {
+         tmp += sudokuGrid[col(j) + i].value + " ";
+         if (j === 3 || j === 6 || j === 9) tmp += "| ";
+      }
+      console.log(tmp);
+      tmp = "| ";
+   }
+   console.log("+-------+-------+-------+");
+   tmp = "| ";
+   for (let i = 4; i <= 6; i++) {
+      for (let j = 1; j <= 9; j++) {
+         tmp += sudokuGrid[col(j) + i].value + " ";
+         if (j === 3 || j === 6 || j === 9) tmp += "| ";
+      }
+      console.log(tmp);
+      tmp = "| ";
+   }
+   console.log("+-------+-------+-------+");
+   tmp = "| ";
+   for (let i = 7; i <= 9; i++) {
+      for (let j = 1; j <= 9; j++) {
+         tmp += sudokuGrid[col(j) + i].value + " ";
+         if (j === 3 || j === 6 || j === 9) tmp += "| ";
+      }
+      console.log(tmp);
+      tmp = "| ";
+   }
+   console.log("+-------+-------+-------+");
+}
